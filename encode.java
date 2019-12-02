@@ -1,67 +1,71 @@
 package myPackage;
 import java.util.*;
+
 class myException extends Exception{
     myException(String msg){
         super(msg);
     }
 }
-class encode{
-    static void is01(char a) throws myException{
-        if(a != '1' || a != '0'){
-            throw new myException("Not Binary");
-        }
-    }
-    static byte[] inputArray(int size) throws myException{
-        if(size != 3){
-            throw new myException("Array Size is Invalid");
-        }
-        else{
-            Scanner sc = new Scanner(System.in);
-            byte[] message = new byte[3];
-            String msg;
-            System.out.print("Enter Message");
-            msg = sc.nextLine();
-            for(int i = 0; i<3; i++){
-                is01(msg.charAt(i));
-                if(msg.charAt(i) == '1'){
-                    message[i] = 1;
-                }
-                else{
-                    message[i] = 0;
-                }
+
+class GeneratorMatrice{
+    int[][] a = {{1,0,0,1,1,1},{0,1,0,0,1,0},{0,0,1,1,0,1}};
+    void print(){
+        for(int i = 0; i<3; i++){
+            for(int j = 0; j<6; j++){
+                System.out.print(a[i][j] + " ");
             }
-            return message;
+            System.out.println();
         }
     }
-    static void MatriceMultiply(byte inputMatrice[]){
-        byte[][] Gmatrice = {{1, 0, 1, 1, 0, 0},{1, 1, 0, 0, 1, 0},{1, 0, 1, 0, 0, 1}};
-        byte[] EncodedMessage = new byte[6];
-        for(int i = 0; i<=6; i++){
-            int sum = 0;
-            for(int j = 0; j<=3; j++){
-                sum = sum + inputMatrice[j]*Gmatrice[j][i];
+    void encode(int[][] message){
+        int sum;
+        System.out.println("Encoded Message");
+        for(int i = 0; i<6; i++){
+            sum = 0;
+            for(int j = 0; j<3; j++){
+                sum = sum + a[j][i]*message[0][j];
             }
             if(sum%2 == 0)
-                EncodedMessage[i] = 0;
+                System.out.print("0 ");
             else
-                EncodedMessage[i] = 1;
-        }
-        for(int i = 0; i<=6; i++){
-            System.out.print(EncodedMessage[i]);
+                System.out.print("1 ");
         }
         System.out.println();
     }
-    public static void main(String args[]){
+}
+class encode {
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        GeneratorMatrice ne = new GeneratorMatrice();
+        System.out.println("Generator Matrice\n");
+        int[][] message = new int[1][3];
+        ne.print();
         while(true){
             try{
-                System.out.println("Enter Size of Message");
-                int size = sc.nextInt();
-                byte message[] = inputArray(size);
-                MatriceMultiply(message);
-            }catch(myException e){
+                System.out.println("\nENCODING MACHINE\n1. Encode New String\n2. Exit\nEnter Coice");
+                int choice = sc.nextInt();
+                if(choice != 2 && choice != 1)
+                    throw new myException("Invalid Choice"); 
+                switch(choice){
+                    case 1:{
+                        System.out.println("\nEnter Message\nMessage Contains Three Bits (1 or 0)");
+                        for(int i = 0; i<3; i++){
+                            int input = sc.nextInt();
+                            if(input != 0 && input != 1)
+                                throw new myException("Invalid Input");    
+                            message[0][i] = input;
+                        }
+                        ne.encode(message); 
+                        break;
+                    }
+                    case 2: System.exit(0);
+                    default:{};
+                }
+            }
+            catch(myException e){
                 System.out.println(e);
             }
         }
     }
 }
+                
